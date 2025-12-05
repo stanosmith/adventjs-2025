@@ -44,7 +44,6 @@ type ElfDateTime =
 // • The `edtToUtc` helper function creates a `Date` object and then mutates its UTC components individually, which is less concise and idiomatic than using `new Date(Date.UTC(...))`.
 // • The `_parseInt` helper function is slightly redundant; `parseInt` can be passed directly to `map` with the radix.
 // 🤔 TODO: Next steps:
-// • Replace the magic number `0.001` with a named constant (e.g., `MILLISECONDS_PER_SECOND = 1000`) or use division by `1000` for clarity in the final calculation.
 // • Refactor the `edtToUtc` function to use `new Date(Date.UTC(year, monthIndex, day, hours, minutes, seconds))` for a more concise and direct way to create UTC date objects.
 // • Consider passing `parseInt` directly to `map` (e.g., `array.map(s => parseInt(s, 10))`) instead of using the `_parseInt` helper for slight conciseness.
 
@@ -58,7 +57,7 @@ function timeUntilTakeOff(
 	const fromTimeEpoch = fromTimeDate.valueOf();
 	const takeOffTimeEpoch = takeOffTimeDate.valueOf();
 
-	return Math.floor((takeOffTimeEpoch - fromTimeEpoch) * 0.001);
+	return Math.floor((takeOffTimeEpoch - fromTimeEpoch) / 1000);
 
 	function edtToUtc(dateTime: ElfDateTime) {
 		// Date
