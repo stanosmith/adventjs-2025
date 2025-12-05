@@ -17,17 +17,21 @@
  * There is also the special block [<], which repeats the digit from the previous block.
  *
  * If in the end there are fewer than 4 digits, you must return null.
- *
- * 🧩 Examples
- * decodeSantaPin('[1++][2-][3+][<]')
- * // "3144"
- *
- * decodeSantaPin('[9+][0-][4][<]')
- * // "0944"
- *
- * decodeSantaPin('[1+][2-]')
- * // null (only 2 digits)
  */
+
+// 🧩 Examples
+
+decodeSantaPin("[1++][2-][3+][<]");
+// "3144"
+
+decodeSantaPin("[9+][0-][4][<]");
+// "0944"
+
+decodeSantaPin("[1+][2-]");
+// null (only 2 digits)
+
+decodeSantaPin("[0][<][<][<]");
+// "0000"
 
 function decodeSantaPin(code: string): string | null {
 	const SPECIAL = "<";
@@ -45,18 +49,18 @@ function decodeSantaPin(code: string): string | null {
 			const number = parseInt(match(/\d/)(block));
 
 			const operators = match(/\D/g)(block);
-			if (operators.length === 0) return number;
 
 			const pluses = match(/\+/g)(operators).length;
 			const minuses = match(/-/g)(operators).length;
 
 			if (pluses) return mod10(number + pluses);
-			return mod10(number + minuses * 9);
-		})
-		.map((number, index, allNumbers) => {
-			if (index > 0 && number === SPECIAL) return allNumbers[index - 1];
+			if (minuses) return mod10(number + minuses * 9);
 			return number;
 		})
+		.reduce((acc, cur) => {
+			if (cur === SPECIAL) return [...acc, acc[acc.length - 1]];
+			return [...acc, cur];
+		}, [] as number[])
 		.join("");
 
 	// If there are fewer than 4 digits, return null
