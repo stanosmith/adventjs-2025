@@ -34,6 +34,20 @@ timeUntilTakeOff("2025*12*25@00|00|12 NP", takeoff);
 type ElfDateTime =
 	`${number}*${number}*${number}@${number}|${number}|${number} NP`;
 
+// ✅ Strengths:
+// • Excellent use of TypeScript template literal types for `ElfDateTime`, providing strong type safety and clarity for the expected input format.
+// • The code is well-structured, using nested helper functions (`edtToUtc`, `_parseInt`) to encapsulate parsing logic, which improves readability and separation of concerns.
+// • The logic correctly handles UTC date parsing and accurately calculates the time difference in full seconds, including handling past and future dates.
+// • The parsing logic is robust, correctly extracting all date and time components from the specified format.
+// ⚠️ Weak points:
+// • The constant `0.001` used for converting milliseconds to seconds is a magic number; using `1000` in a division or a named constant would improve readability.
+// • The `edtToUtc` helper function creates a `Date` object and then mutates its UTC components individually, which is less concise and idiomatic than using `new Date(Date.UTC(...))`.
+// • The `_parseInt` helper function is slightly redundant; `parseInt` can be passed directly to `map` with the radix.
+// 🤔 TODO: Next steps:
+// • Replace the magic number `0.001` with a named constant (e.g., `MILLISECONDS_PER_SECOND = 1000`) or use division by `1000` for clarity in the final calculation.
+// • Refactor the `edtToUtc` function to use `new Date(Date.UTC(year, monthIndex, day, hours, minutes, seconds))` for a more concise and direct way to create UTC date objects.
+// • Consider passing `parseInt` directly to `map` (e.g., `array.map(s => parseInt(s, 10))`) instead of using the `_parseInt` helper for slight conciseness.
+
 function timeUntilTakeOff(
 	fromTime: ElfDateTime,
 	takeOffTime: ElfDateTime,
