@@ -29,3 +29,43 @@
  * // null (only 2 digits)
  */
 
+const SPECIAL = "<";
+const mod10 = modulo(10);
+
+decodeSantaPin("[1++][2-][3+][<]");
+// "3144"
+
+decodeSantaPin("[9+][0-][4][<]");
+// "0944"
+
+decodeSantaPin("[1+][2-]");
+// null (only 2 digits)
+
+console.log(Math.abs(0 - 1 * 10) % 10);
+console.log(mod10(9 + 1)); // Plus
+console.log(mod10(0 + 1 * 9)); // Minus
+
+function decodeSantaPin(code: string): string {
+	const blocks = code
+		.split("][")
+		.map((block) => block.replace("[", "").replace("]", ""));
+
+	return blocks
+		.map((block, index, allBlocks) => {
+			const isSpecial = index > 0 && block === SPECIAL; // Special is only valid if it's not the first block
+			if (isSpecial) return allBlocks[index - 1];
+
+			const number = block.replace(/\D+/, "");
+			const operators = block.replace(/\d/, "");
+			const pluses = block.replace(/\d/, "");
+
+			// TODO: If there are fewer than 4 digits, return null
+
+			return block;
+		})
+		.join("");
+}
+
+function modulo(divisor: number) {
+	return (dividend: number) => dividend % divisor;
+}
