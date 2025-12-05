@@ -38,6 +38,44 @@ function timeUntilTakeOff(
 	fromTime: ElfDateTime,
 	takeOffTime: ElfDateTime,
 ): number {
-	// All your code here
-	return 0;
+	const fromTimeDate = edtToUtc(fromTime);
+	const takeOffTimeDate = edtToUtc(takeOffTime);
+
+	const fromTimeEpoch = fromTimeDate.valueOf();
+	const takeOffTimeEpoch = takeOffTimeDate.valueOf();
+
+	return Math.floor((takeOffTimeEpoch - fromTimeEpoch) * 0.001);
+
+	function edtToUtc(dateTime: ElfDateTime) {
+		// Date
+		const dateParts = dateTime.split("@")[0].split("*").map(_parseInt);
+		const year = dateParts[0];
+		const month = dateParts[1] - 1;
+		const day = dateParts[2];
+
+		// Time
+		const timeParts = dateTime
+			.split("@")[1]
+			.replace(/ NP/, "")
+			.split("|")
+			.map(_parseInt);
+		const hours = timeParts[0];
+		const minutes = timeParts[1];
+		const seconds = timeParts[2];
+
+		// Create new Date instance and set datetime in UTC
+		const fromTimeDate = new Date();
+		fromTimeDate.setUTCFullYear(year);
+		fromTimeDate.setUTCMonth(month);
+		fromTimeDate.setUTCDate(day);
+		fromTimeDate.setUTCHours(hours);
+		fromTimeDate.setUTCMinutes(minutes);
+		fromTimeDate.setUTCSeconds(seconds);
+
+		return fromTimeDate;
+	}
+
+	function _parseInt(string: string) {
+		return parseInt(string, 10);
+	}
 }
