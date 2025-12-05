@@ -29,43 +29,44 @@
  * // null (only 2 digits)
  */
 
-const SPECIAL = "<";
-const mod10 = modulo(10);
+function decodeSantaPin(code: string): string | null {
+	const SPECIAL = "<";
 
-decodeSantaPin("[1++][2-][3+][<]");
-// "3144"
+	const mod10 = modulo(10);
 
-decodeSantaPin("[9+][0-][4][<]");
-// "0944"
-
-decodeSantaPin("[1+][2-]");
-// null (only 2 digits)
-
-console.log(Math.abs(0 - 1 * 10) % 10);
-console.log(mod10(9 + 1)); // Plus
-console.log(mod10(0 + 1 * 9)); // Minus
-
-function decodeSantaPin(code: string): string {
 	const blocks = code
 		.split("][")
 		.map((block) => block.replace("[", "").replace("]", ""));
 
-	return blocks
-		.map((block, index, allBlocks) => {
-			const isSpecial = index > 0 && block === SPECIAL; // Special is only valid if it's not the first block
-			if (isSpecial) return allBlocks[index - 1];
+	const pin = blocks
+		.map((block, index) => {
+			if (block === SPECIAL) return block;
 
-			const number = block.replace(/\D+/, "");
-			const operators = block.replace(/\d/, "");
-			const pluses = block.replace(/\d/, "");
+			const number = parseInt(match(/\d/)(block));
 
-			// TODO: If there are fewer than 4 digits, return null
+			const operators = match(/\D/g)(block);
+			if (operators.length === 0) return number;
 
-			return block;
+			const pluses = match(/\+/g)(operators).length;
+			const minuses = match(/-/g)(operators).length;
+
+			if (pluses) return mod10(number + pluses);
+			return mod10(number + minuses * 9);
+		})
+		.map((number, index, allNumbers) => {
+			if (index > 0 && number === SPECIAL) return allNumbers[index - 1];
+			return number;
 		})
 		.join("");
-}
 
-function modulo(divisor: number) {
-	return (dividend: number) => dividend % divisor;
+	// If there are fewer than 4 digits, return null
+	return pin.length < 4 ? null : pin;
+
+	function match(regex: RegExp) {
+		return (str: string) => str.match(regex)?.join("") ?? "";
+	}
+
+	function modulo(divisor: number) {
+		return (dividend: number) => dividend % divisor;
+	}
 }
