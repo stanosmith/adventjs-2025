@@ -40,6 +40,13 @@ matchGloves(gloves3);
 
 type Glove = { hand: "L" | "R"; color: string };
 
+// Code Review 5/5
+// ✅ Strengths:
+// • The logic is correct and robust, effectively handling various edge cases such as empty input, no matching pairs, or multiple pairs of the same color.
+// • The algorithm is efficient, achieving optimal time complexity of O(N) and space complexity of O(N), where N is the number of gloves.
+// • The code is highly readable with clear variable names and a well-structured flow, first summarizing counts and then processing them.
+// • Excellent use of TypeScript, leveraging type inference and providing explicit type assertions where necessary (e.g., for the `reduce` accumulator) to ensure type safety without using `any`.
+
 function matchGloves(gloves: Glove[]): string[] {
 	const summary = gloves.reduce(
 		(summary, { hand, color }) => {
