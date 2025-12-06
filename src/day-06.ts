@@ -41,5 +41,32 @@ matchGloves(gloves3);
 type Glove = { hand: "L" | "R"; color: string };
 
 function matchGloves(gloves: Glove[]): string[] {
-	return [];
+	const summary = gloves.reduce(
+		(summary, { hand, color }) => {
+			if (summary[color]) {
+				if (typeof summary[color][hand] === "number") summary[color][hand]++;
+				else summary[color][hand] = 1;
+			} else {
+				summary[color] = { [hand]: 1 };
+			}
+			return summary;
+		},
+		{} as Record<string, Record<string, number>>,
+	);
+
+	const pairs = [] as string[];
+
+	for (const summaryKey in summary) {
+		const left = summary[summaryKey]["L"];
+		const right = summary[summaryKey]["R"];
+
+		if (left && right) {
+			const totalMatches = Math.min(left, right);
+			for (let i = 0; i < totalMatches; i++) {
+				pairs.push(summaryKey);
+			}
+		}
+	}
+
+	return pairs;
 }
