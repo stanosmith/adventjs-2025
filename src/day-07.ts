@@ -34,5 +34,7 @@ drawTree(4, "+", 1);
 //    #
 
 function drawTree(height: number, ornament: string, frequency: number): string {
-	return "";
+	const tree = [] as string[];
+	for (let i = 0; i < height; i++) {}
+	return tree.join("\n");
 }
