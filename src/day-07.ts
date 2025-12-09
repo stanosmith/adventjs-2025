@@ -58,8 +58,8 @@ function drawTree(height: number, ornament: string, frequency: number): string {
 		tree.push(row.join(""));
 	}
 
-	const trunk = Array(branches.length).fill(" ");
-	trunk.splice(height - 1, 1, "#");
+	const trunk = Array(height - 1).fill(" ");
+	trunk.push("#");
 
 	tree.push(trunk.join(""));
 
