@@ -52,7 +52,7 @@ function drawTree(height: number, ornament: string, frequency: number): string {
 				return mod === 0 ? ornament : branch;
 			});
 
-		const row = Array(actualWidth).fill(" ");
+		const row = Array(actualWidth - branchStart).fill(" ");
 		row.splice(branchStart, branches.length, ...branches);
 
 		tree.push(row.join(""));
