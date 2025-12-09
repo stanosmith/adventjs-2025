@@ -38,11 +38,19 @@ function drawTree(height: number, ornament: string, frequency: number): string {
 	const actualWidth = 2 * height - 1;
 	const tree = [] as string[];
 	let branches = [] as string[];
+	let branchNumber = 0;
 
 	for (let i = 1; i < actualHeight; i++) {
 		const numberOfBranches = 2 * i - 1;
-		branches = Array(numberOfBranches).fill("*");
 		const branchStart = height - i;
+
+		branches = Array(numberOfBranches)
+			.fill("*")
+			.map((branch) => {
+				branchNumber++;
+				const mod = branchNumber % frequency;
+				return mod === 0 ? ornament : branch;
+			});
 
 		const row = Array(actualWidth).fill(" ");
 		row.splice(branchStart, branches.length, ...branches);
@@ -52,6 +60,7 @@ function drawTree(height: number, ornament: string, frequency: number): string {
 
 	const trunk = Array(branches.length).fill(" ");
 	trunk.splice(height - 1, 1, "#");
+
 	tree.push(trunk.join(""));
 
 	return tree.join("\n");
