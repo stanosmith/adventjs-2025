@@ -47,6 +47,18 @@ moveReno(board, "UUU");
 moveReno(board, "RR");
 // ➞ 'fail' -> it moves but doesn't pick anything up
 
+// Code review: 4/5
+// ✅ Strengths:
+// • The code correctly handles the logic for success, crash, and fail conditions.
+// • The use of nested functions for helper logic is well-structured.
+// • TypeScript types are used appropriately for clarity.
+// ⚠️ Weak points:
+// • The cyclomatic complexity is high due to the nested loops and conditional logic, making it harder to follow.
+// • The `movementTracker` function modifies the `coordinates` array in place, which can lead to unexpected side effects if not carefully managed. A more functional approach would be preferable.
+// 🤔 Next steps:
+// • Consider refactoring the movement logic to reduce cyclomatic complexity. This might involve breaking down the main loop into smaller, more manageable functions or using a state machine pattern.
+// • Modify `movementTracker` to return a new coordinate array instead of mutating the existing one. This improves predictability and testability.
+
 type Board = string;
 type Moves = string;
 type Result = "fail" | "crash" | "success";
