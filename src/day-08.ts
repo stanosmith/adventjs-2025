@@ -26,5 +26,21 @@ findUniqueToy("sTreSS"); // 'T'
 findUniqueToy("z"); // 'z'
 
 function findUniqueToy(toy: string): string {
-	return "";
+	const toys = toy.split("").reduce(
+		(summary, letter) => {
+			const letterNormalized = normalize(letter);
+			if (summary[letterNormalized]) summary[letterNormalized].count++;
+			else summary[letterNormalized] = { ogLetter: letter, count: 1 };
+			return summary;
+		},
+		{} as Record<string, { ogLetter: string; count: number }>,
+	);
+
+	const uniqueToy = Object.values(toys).find(({ count }) => count === 1);
+
+	return uniqueToy?.ogLetter ?? "";
+
+	function normalize(str: string) {
+		return str.toLowerCase();
+	}
 }
