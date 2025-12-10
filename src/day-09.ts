@@ -52,5 +52,65 @@ type Moves = string;
 type Result = "fail" | "crash" | "success";
 
 function moveReno(board: Board, moves: Moves): Result {
+	const boardGrid = board.split("\n").filter(identity).map(stringToArray);
+	const initialCoordinates = getInitialCoordinates(boardGrid);
+	const track = movementTracker(initialCoordinates);
+
+	for (let i = 0; i < moves.length; i++) {
+		const movement = moves.slice(i, i + 1);
+		const [x, y] = track(movement);
+
+		const row = boardGrid[y];
+		const col = typeof row !== "undefined" ? row[x] : undefined;
+
+		if (
+			col === "#" ||
+			x < 0 ||
+			x >= boardGrid[0].length ||
+			y < 0 ||
+			y >= boardGrid.length
+		)
+			return "crash";
+		if (col === "*") return "success";
+	}
+
 	return "fail";
+
+	function identity(a: unknown) {
+		return a;
+	}
+
+	function stringToArray(s: string) {
+		return s.split("");
+	}
+
+	function getInitialCoordinates(boardGrid: string[][]) {
+		for (let row = 0; row < boardGrid.length; row++) {
+			const col = boardGrid[row].indexOf("@");
+			if (col !== -1) return [col, row];
+		}
+		throw Error(`Unable to find Reno in board "${boardGrid}"`);
+	}
+
+	function movementTracker(coordinates: number[]) {
+		return (movement: string | "L" | "R" | "U" | "D") => {
+			switch (movement) {
+				case "L":
+					coordinates[0]--;
+					break;
+				case "R":
+					coordinates[0]++;
+					break;
+				case "U":
+					coordinates[1]--;
+					break;
+				case "D":
+					coordinates[1]++;
+					break;
+				default:
+					throw Error(`Unknown movement '${movement}'`);
+			}
+			return coordinates;
+		};
+	}
 }
