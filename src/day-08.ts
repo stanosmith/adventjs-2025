@@ -25,6 +25,13 @@ findUniqueToy("aAaAaAF"); // 'F'
 findUniqueToy("sTreSS"); // 'T'
 findUniqueToy("z"); // 'z'
 
+// Code review: 5/5
+// ✅ Strengths:
+// • The code correctly identifies the first non-repeated character, handling case-insensitivity as required.
+// • The use of `reduce` to build a frequency map is efficient and idiomatic.
+// • TypeScript types are used effectively, and the inferred types are appropriate.
+// • The code is clean, readable, and adheres to the problem constraints.
+
 function findUniqueToy(toy: string): string {
 	const toys = toy.split("").reduce(
 		(summary, letter) => {
