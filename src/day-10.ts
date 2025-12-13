@@ -22,5 +22,34 @@ maxDepth("[]]]"); // -> -1 (extra closing brackets)
 maxDepth("[][]["); // -> -1 (one remains unclosed)
 
 function maxDepth(s: string): number {
-	return 0;
+	const startsWithOpenBracket = /^\[/.test(s);
+	const endsWithCloseBracket = /]$/.test(s);
+
+	const open = "[";
+	const close = "]";
+	const letters = s.split("") as "["[] | "]"[];
+	const wishes = letters.reduce(
+		(summary, bracket: "[" | "]") => {
+			summary[bracket]++;
+			return summary;
+		},
+		{ [open]: 0, [close]: 0 },
+	);
+
+	if (
+		!startsWithOpenBracket ||
+		!endsWithCloseBracket ||
+		wishes[open] !== wishes[close]
+	)
+		return -1;
+
+	let depth = 1;
+
+	for (let i = 0; i < letters.length; i++) {
+		const lastBracket = letters[i - 1];
+		const bracket = letters[i];
+		if (bracket === open && bracket === lastBracket) depth++;
+	}
+
+	return depth;
 }
