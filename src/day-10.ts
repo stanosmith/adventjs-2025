@@ -24,16 +24,18 @@ maxDepth("[][]["); // -> -1 (one remains unclosed)
 // Code review: 3/5
 // ✅ Strengths:
 // • The code attempts to handle bracket balancing and depth calculation.
+// Uses TypeScript for type safety.
 // ⚠️ Weak points:
-// • The logic for checking bracket validity is incomplete. It only checks if the string starts with '[' and ends with ']', and if the total counts of '[' and ']' are equal. It does not detect cases like '][' or '[]]]' correctly.
-// • The depth calculation logic is flawed. It only increments depth when consecutive '[' characters are found, which does not accurately represent nested depth. For example, '[[[]]]' would incorrectly result in a depth of 2.
-// • The code does not correctly handle the case where the input string is empty or contains characters other than '[' and ']'.
-// • The use of `letters.split('') as '['[] | ']'[]` is a type assertion that might not be entirely safe if the input string contains characters other than brackets. A more robust approach would be to filter or validate characters.
+// • The logic for calculating maximum depth is incorrect. It only increments depth when consecutive opening brackets are found, failing to account for nested structures like `[[]]` correctly.
+// • The initial checks for `startsWithOpenBracket` and `endsWithCloseBracket` are insufficient for full bracket validation. For example, `][` would pass these checks but is invalid.
+// • The filtering of characters using `filter(identity).filter(isValidCharacter)` is redundant and can be simplified.
+// • The `reduce` operation to count brackets is unnecessary if the primary goal is to iterate and track depth.
 // 🤔 Next steps:
-// • Implement a robust bracket validation mechanism. A common approach is to use a stack to track open brackets and ensure they are closed in the correct order.
-// • Revise the depth calculation logic. The maximum depth should be tracked by incrementing a counter when an opening bracket is encountered and decrementing it when a closing bracket is encountered, while keeping track of the maximum value the counter reaches.
-// • Add checks for empty strings and potentially filter or validate input characters to ensure only brackets are processed.
-// • Consider using a more type-safe approach for handling the characters in the string, perhaps by filtering them first or using a loop that explicitly checks each character.
+// • Implement a single pass through the string to track current depth and maximum depth. Increment depth for '[' and decrement for ']'.
+// • Ensure that the depth never goes below zero during the pass, indicating an invalid sequence (closing bracket without an open one).
+// • After the pass, check if the final depth is zero. If not, it means there are unclosed brackets.
+// • Remove the redundant `filter` calls and the `reduce` operation. Process the string directly.
+// • Refactor the initial checks to be part of the main loop for a more robust validation.
 
 function maxDepth(s: string): number {
 	const open = "[";
