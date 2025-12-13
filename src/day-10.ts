@@ -36,12 +36,16 @@ maxDepth("[][]["); // -> -1 (one remains unclosed)
 // • Consider using a more type-safe approach for handling the characters in the string, perhaps by filtering them first or using a loop that explicitly checks each character.
 
 function maxDepth(s: string): number {
+	const open = "[";
+	const close = "]";
+	const identity = (val: unknown) => val;
+	const isValidCharacter = (val: string) => val === open || val === close;
 	const startsWithOpenBracket = /^\[/.test(s);
 	const endsWithCloseBracket = /]$/.test(s);
 
-	const open = "[";
-	const close = "]";
-	const letters = s.split("") as "["[] | "]"[];
+	const letters = s.split("").filter(identity).filter(isValidCharacter) as
+		| "["[]
+		| "]"[];
 	const wishes = letters.reduce(
 		(summary, bracket: "[" | "]") => {
 			summary[bracket]++;
