@@ -21,6 +21,20 @@ maxDepth("[[["); // -> -1 (missing closing brackets)
 maxDepth("[]]]"); // -> -1 (extra closing brackets)
 maxDepth("[][]["); // -> -1 (one remains unclosed)
 
+// Code review: 3/5
+// ✅ Strengths:
+// • The code attempts to handle bracket balancing and depth calculation.
+// ⚠️ Weak points:
+// • The logic for checking bracket validity is incomplete. It only checks if the string starts with '[' and ends with ']', and if the total counts of '[' and ']' are equal. It does not detect cases like '][' or '[]]]' correctly.
+// • The depth calculation logic is flawed. It only increments depth when consecutive '[' characters are found, which does not accurately represent nested depth. For example, '[[[]]]' would incorrectly result in a depth of 2.
+// • The code does not correctly handle the case where the input string is empty or contains characters other than '[' and ']'.
+// • The use of `letters.split('') as '['[] | ']'[]` is a type assertion that might not be entirely safe if the input string contains characters other than brackets. A more robust approach would be to filter or validate characters.
+// 🤔 Next steps:
+// • Implement a robust bracket validation mechanism. A common approach is to use a stack to track open brackets and ensure they are closed in the correct order.
+// • Revise the depth calculation logic. The maximum depth should be tracked by incrementing a counter when an opening bracket is encountered and decrementing it when a closing bracket is encountered, while keeping track of the maximum value the counter reaches.
+// • Add checks for empty strings and potentially filter or validate input characters to ensure only brackets are processed.
+// • Consider using a more type-safe approach for handling the characters in the string, perhaps by filtering them first or using a loop that explicitly checks each character.
+
 function maxDepth(s: string): number {
 	const startsWithOpenBracket = /^\[/.test(s);
 	const endsWithCloseBracket = /]$/.test(s);
