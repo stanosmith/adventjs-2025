@@ -61,6 +61,78 @@ elfBattle("AA", "FF");
 // → 2
 
 function elfBattle(elf1: string, elf2: string): number {
-	// Code here
-	return 0;
+	const RESULT = {
+		elf1: 1,
+		elf2: 2,
+		draw: 0,
+	};
+
+	enum ActionType {
+		ATTACK = "ATTACK",
+		BLOCK = "BLOCK",
+	}
+
+	enum ActionId {
+		A = "A",
+		B = "B",
+		F = "F",
+	}
+
+	const STARTING_HP = 3;
+	const ACTIONS = [
+		{
+			id: ActionId.A,
+			type: ActionType.ATTACK,
+			hitPoint: 1,
+		},
+		{
+			id: ActionId.F,
+			type: ActionType.ATTACK,
+			hitPoint: 2,
+		},
+		{
+			id: ActionId.B,
+			type: ActionType.BLOCK,
+			blocks: [ActionId.A],
+		},
+	];
+
+	// Handle blanket cases
+	if (elf1.trim().length !== elf2.trim().length)
+		throw Error("Invalid battle: Elve's must have the same number of movies.");
+	if (elf1 === elf2) return RESULT.draw;
+
+	// Normalize and Validate moves
+	const movesElf1 = getMoves(elf1);
+	const movesElf2 = getMoves(elf2);
+
+	const rounds = movesElf1.map((action: ActionId, index) => [
+		action,
+		movesElf2[index],
+	]) as ActionId[][];
+
+	return rounds.reduce((result: number, round: ActionId[]) => {
+		return result;
+	}, RESULT.draw);
+
+	function getMoves(moves: string) {
+		return moves.split("").filter(identity).map(forceUpper).map(validateAction);
+	}
+
+	function identity(val: unknown) {
+		return val;
+	}
+
+	function forceUpper(move: string) {
+		return move.toUpperCase();
+	}
+
+	function validateAction(action: string) {
+		const key = action as keyof typeof ActionId;
+
+		if (Object.keys(ActionId).includes(key)) {
+			return ActionId[key];
+		}
+		throw Error(`This battle is forfeit due to an invalid action: ${action}`);
+	}
 }
