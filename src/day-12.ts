@@ -67,6 +67,13 @@ function elfBattle(elf1: string, elf2: string): number {
 		draw: 0,
 	};
 
+	type Action = {
+		id: ActionId;
+		type: ActionType;
+		hitPoint?: number;
+		blocks?: ActionId[];
+	};
+
 	enum ActionType {
 		ATTACK = "ATTACK",
 		BLOCK = "BLOCK",
@@ -103,20 +110,37 @@ function elfBattle(elf1: string, elf2: string): number {
 	if (elf1 === elf2) return RESULT.draw;
 
 	// Normalize and Validate moves
-	const movesElf1 = getMoves(elf1);
+	const movesElf1: Action[] = getMoves(elf1);
 	const movesElf2 = getMoves(elf2);
 
-	const rounds = movesElf1.map((action: ActionId, index) => [
-		action,
-		movesElf2[index],
-	]) as ActionId[][];
+	const rounds = getRounds(movesElf1, movesElf2);
 
-	return rounds.reduce((result: number, round: ActionId[]) => {
-		return result;
-	}, RESULT.draw);
+	const result = rounds.reduce(
+		(result, round: Action[]) => {
+			return result;
+		},
+		{ elf1: STARTING_HP, elf2: STARTING_HP },
+	);
+
+	if (result.elf1 > result.elf2) return RESULT.elf1;
+	else if (result.elf2 > result.elf1) return RESULT.elf2;
+	return RESULT.draw;
+
+	function getRounds(movesA: Action[], movesB: Action[]) {
+		return movesA.map((action: Action, index) => [action, movesB[index]]);
+	}
 
 	function getMoves(moves: string) {
-		return moves.split("").filter(identity).map(forceUpper).map(validateAction);
+		return moves
+			.split("")
+			.filter(identity)
+			.map(forceUpper)
+			.map(validateAction)
+			.map(getAction);
+	}
+
+	function getAction(actionId: ActionId) {
+		return ACTIONS.find((action) => action.id === actionId);
 	}
 
 	function identity(val: unknown) {
