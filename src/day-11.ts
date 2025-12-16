@@ -25,5 +25,39 @@ findUnsafeGifts([".....", ".*.*.", "..#..", ".*.*.", "....."]); // ➞ 4
 // The four presents have no cameras, because they are diagonal to the camera
 
 function findUnsafeGifts(warehouse: string[]): number {
-	return 0;
+	const present = "*";
+	const camera = "#";
+
+	const sum = (a: number, b: number) => a + b;
+
+	return warehouse
+		.map((row, index, warehouse) => {
+			const unsafeCounter = getUnsafeCounter(
+				warehouse[index - 1],
+				warehouse[index + 1],
+			);
+			const presentIndex = row.indexOf(present);
+			if (presentIndex !== -1) return unsafeCounter(row);
+			return 0;
+		})
+		.reduce(sum, 0);
+
+	function getUnsafeCounter(rowPrev: string, rowNext: string) {
+		return function countUnsafe(row: string) {
+			let unsafeTotal = 0;
+			for (let i = 0; i < row.length; i++) {
+				const item = row[i];
+				if (item === present) {
+					const adjacentItems = [
+						row[i - 1],
+						row[i + 1],
+						rowPrev ? rowPrev[i] : undefined,
+						rowNext ? rowNext[i] : undefined,
+					];
+					if (!adjacentItems.includes(camera)) unsafeTotal++;
+				}
+			}
+			return unsafeTotal;
+		};
+	}
 }
